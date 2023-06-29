@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Typing</title>
+
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+</head>
+
+<body>
+
+  <div id="home-page">
+
+    <h1>Number Typing</h1>
+
+    <section>
+      <h3>Number Length</h3>
+      <p>
+        <label><input type="radio" name="length-type" value="fixed">Fixed</label>
+        <input type="number" id="fixed-length">
+      </p>
+      <p>
+        <label><input type="radio" name="length-type" value="random">Random</label>
+        <input type="number" id="random-length-min"> ~ <input type="number" id="random-length-max">
+      </p>
+    </section>
+
+    <section>
+      <h3>Exercises Count</h3>
+      <p>
+        <input type="number" id="exercises-count">
+      </p>
+    </section>
+
+    <section>
+      <button onclick="showGamePage()">START!</button>
+    </section>
+  </div>
+
+  <div id="game-page">
+    <div id="game-page-container">
+      <section id="game-area">
+
+        <div id="timer-area">
+          <div>Time</div>
+          <div id="timer"></div>
+        </div>
+
+        <div id="score">
+          <div>Done</div>
+          <div id="score-done"></div>
+          <div>Mistakes</div>
+          <div id="score-mistakes"></div>
+        </div>
+
+        <div id="queue-area">
+          <div id="queue-window">
+            <div id="queue"></div>
+          </div>
+          <svg id="arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 50">
+            <polygon fill="currentColor" stroke="currentColor" stroke-width="10" stroke-linejoin="round" points="5,5 95,5 50,45"></polygon>
+          </svg>
+        </div>
+
+        <div id="current-box">
+          <div id="cursor"></div>
+        </div>
+
+        <div id="button-area">
+          <button onclick="retryGame()">Retry</button>
+          <button onclick="exitGame()">Exit</button>
+        </div>
+
+      </section>
+    </div>
+  </div>
+
+  <div id="wrapper">
+    <div id="loading">Loading...</div>
+    <div id="count-down"></div>
+  </div>
+</body>
+</html>
