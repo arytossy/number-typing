@@ -390,6 +390,7 @@ function acceptTyping(event) {
                     stopGame();
                     currentBox.put("Congratulations!");
                     currentBox.moveCursor();
+                    popConfetti();
                 }
             }
             break;
@@ -437,4 +438,112 @@ function retryGame() {
 function exitGame() {
     stopGame();
     showHomePage();
+}
+
+async function popConfetti() {
+
+    // 最大飛距離 px
+    const maxDistance = 500;
+
+    // 広がり角度 degree
+    const spreadAngle = 100;
+
+    // 紙吹雪の数
+    const amount = 70;
+
+    // 角度を半分にしてラジアンに変換。
+    const maxRadian = spreadAngle / 2 * Math.PI / 180;
+
+    // 現在の body の大きさから、紙吹雪が飛び始める原点を算出。
+    const originLeft = document.body.clientWidth / 2;
+    const originTop = document.body.clientHeight / 3 * 2;
+
+    // 紙吹雪を描画するエリア。
+    const canvas = document.createElement("div");
+    canvas.style.position = "absolute";
+    canvas.style.zIndex = "-1000";
+
+    // 紙吹雪が飛びきった(これから落ちていく直前)状態の描画エリアの大きさと位置。
+    const canvasWidth = 2 * maxDistance * Math.sin(maxRadian);
+    const canvasHeight = maxDistance;
+    const canvasLeft = originLeft - canvasWidth / 2;
+    const canvasTop = originTop - maxDistance;
+
+    canvas.style.width = `${canvasWidth}px`;
+    canvas.style.height = `${canvasHeight}px`;
+    canvas.style.left = `${canvasLeft}px`;
+    canvas.style.top = `${canvasTop}px`;
+
+    // 紙吹雪を生成。
+    [...Array(amount)].map(() => {
+        const chip = document.createElement("div");
+        chip.style.position = "absolute";
+        chip.style.width = "10px";
+        chip.style.height = "10px";
+        chip.style.borderRadius = "1px";
+
+        // 射出角度(真っ直ぐからどれくらいずれるか)を決定。
+        const radian = maxRadian * Math.random();
+
+        // 飛距離を決定。遠くに飛ぶのが多くなるように調整。
+        const distance = Math.sin(Math.acos(1 - Math.random())) * maxDistance;
+
+        // 描画エリアにおける left, top を決定。
+        const left = canvasWidth / 2 + ((Math.sign(Math.random() - 0.5)) * (distance * Math.sin(radian)));
+        const top = canvasHeight - distance * Math.cos(radian);
+
+        // 割合に変換してスタイルに適用。
+        chip.style.left = `${left / canvasWidth * 100}%`;
+        chip.style.top = `${top / canvasHeight * 100}%`;
+
+        // 色を決定。
+        const of3 = Math.floor(Math.random() * 3);
+        const of2 = Math.floor(Math.random() * 2);
+        const [r, g, b] = [
+            of3 === 0 ? 0 : (of3 + 1 + of2) % 3 === 0 ? 255 : Math.floor(Math.random() * 5) * 63.75,
+            of3 === 1 ? 0 : (of3 + 1 + of2) % 3 === 1 ? 255 : Math.floor(Math.random() * 5) * 63.75,
+            of3 === 2 ? 0 : (of3 + 1 + of2) % 3 === 2 ? 255 : Math.floor(Math.random() * 5) * 63.75
+        ];
+        chip.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.7)`;
+
+        // ひらひらアニメーション。
+        chip.style.transformOrigin = `${Math.random() * 200 - 50}% ${Math.random() * 200 - 50}%`;
+        chip.animate({
+            transform: ["none", `rotate3d(${Math.random()}, ${Math.random()}, ${Math.random()}, 360deg)`]
+        }, {
+            duration: Math.random() * 1000 + 500,
+            easing: "linear",
+            iterations: Infinity
+        });
+
+        canvas.appendChild(chip);
+    });
+
+    document.body.appendChild(canvas);
+
+    // 発射！描画範囲を広げることで表現。
+    await canvas.animate({
+        left: [`${originLeft}px`, `${canvasLeft}px`],
+        top: [`${originTop}px`, `${canvasTop}px`],
+        width: [0, `${canvasWidth}px`],
+        height: [0, `${canvasHeight}px`],
+        easing: "ease-out"
+    }, {
+        duration: 300,
+        easing: "ease-out",
+        fill: "backwards"
+    })
+    .finished;
+
+    // 落ちてゆく。。。
+    await canvas.animate({
+        top: [`${canvasTop}px`, `${canvasTop + 500}px`],
+        opacity: [1, 0]
+    }, {
+        duration: 3000,
+        easing: "cubic-bezier(0,0,0.1,0)"
+    })
+    .finished;
+
+    canvas.remove();
 }
