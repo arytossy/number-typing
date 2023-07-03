@@ -267,15 +267,30 @@ button:active::after {
 }
 
 #score-done {
+    position: relative;
     font-size: 30px;
     font-weight: bold;
     color: #0a0;
 }
 
 #score-mistakes {
+    position: relative;
     font-size: 30px;
     font-weight: bold;
     color: #c00;
+}
+
+@keyframes fadeup {
+    from { top: 0; opacity: 1 }
+    to { top: -10px; opacity: 0 }
+}
+
+#score-done .effect,
+#score-mistakes .effect {
+    position: absolute;
+    top: unset;
+    left: -100px;
+    animation: fadeup .5s linear;
 }
 
 #button-area {

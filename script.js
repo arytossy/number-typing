@@ -193,10 +193,20 @@ const score = {
     mistake() {
         this._mistakes++;
         this._dom.mistakes.textContent = this._mistakes;
+        const effect = document.createElement("div");
+        effect.classList.add("effect");
+        effect.textContent = "+1";
+        this._dom.mistakes.appendChild(effect);
+        effect.addEventListener("animationend", () => effect.remove());
     },
     done(num) {
         this._done += num;
         this._dom.done.textContent = this._done;
+        const effect = document.createElement("div");
+        effect.classList.add("effect");
+        effect.textContent = `+${num}`;
+        this._dom.done.appendChild(effect);
+        effect.addEventListener("animationend", () => effect.remove());
     }
 };
 
